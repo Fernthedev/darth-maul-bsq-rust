@@ -1,0 +1,15 @@
+/target
+./bs_cordl/src/
+bs_cordl
+build/
+codegen-rs
+*.7z
+*.qmod
+.cache
+build_cmake
+extern/
+ndkpath.txt
+
+
+compile_commands.json
+compile_commands.events.json

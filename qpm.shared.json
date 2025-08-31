@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/QuestPackageManager/QPM.Package/refs/heads/main/qpm.shared.schema.json",
+  "config": {
+    "version": "0.4.0",
+    "sharedDir": "shared",
+    "dependenciesDir": "extern",
+    "info": {
+      "name": "Darth Maul Rust",
+      "id": "darth_maul_rust",
+      "version": "0.1.0",
+      "url": null,
+      "additionalData": {
+        "overrideSoName": "libdarth_maul_rust.so",
+        "cmake": true
+      }
+    },
+    "workspace": {
+      "scripts": {
+        "build": [
+          "cargo ndk -t arm64-v8a -o ./build build --release"
+        ],
+        "copy": [
+          "pwsh ./scripts/copy.ps1"
+        ],
+        "cpp": [
+          "pwsh ./scripts/make_compile_db.ps1"
+        ]
+      },
+      "ndk": "^27.2.12479018",
+      "qmodIncludeDirs": [
+        "build/arm64-v8a"
+      ]

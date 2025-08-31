@@ -1,0 +1,79 @@
+name: Rust Build
+
+env:
+  qmodName: darth_maul_rust
+
+on:
+  push:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust Nightly
+        run: |
+          rustup default nightly
+          rustup target add aarch64-linux-android
+          cargo install --locked cargo-ndk
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+              key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+              restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: QPM Rust Action
+        uses: Fernthedev/qpm-rust-action@v1
+        with:
+          #required
+          workflow_token: ${{secrets.GITHUB_TOKEN}}
+          resolve_ndk: true # Download NDK using qpm, satisfying the qpm.json NDK requirement
+          restore: true # will run restore on download
+          cache: true #will cache dependencies
+
+          # Name of qmod in release asset. Assumes exists, same as prior
+          qpm_qmod: ${{env.qmodName}}.qmod
+
+      - name: Cache cargo target directory
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-
+
+      - name: Build
+        run: qpm s build
+
+      - name: Build
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          qpm-rust s build
+          qpm-rust qmod zip
+
+      - name: Upload non-debug artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libdarth_maul_rust.so
+          path: build/arm64-v8a/libdarth_maul_rust.so
+          if-no-files-found: error
+
+      - name: Upload qmod artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.qmodName}}.qmod
+          path: ./${{ env.qmodName }}.qmod
+          if-no-files-found: error
+
+      # - name: Run tests
+      #   run: cargo test --verbose
