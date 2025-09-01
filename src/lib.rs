@@ -2,6 +2,7 @@
 
 use std::ffi::{CStr, CString, c_char};
 
+use bs_cordl::GlobalNamespace;
 use quest_hook::libil2cpp::Gc;
 use tracing::info;
 
@@ -9,7 +10,11 @@ pub mod config;
 pub mod hooks;
 
 unsafe extern "C" {
-    unsafe fn doSomething();
+    fn darth_maul_cpp_init();
+
+    pub fn darth_maul_invoke_GameplaySetupViewController_RefreshContent(
+        this: Gc<GlobalNamespace::GameplaySetupViewController>,
+    );
 }
 
 pub static MOD_ID: &CStr = c"darth_maul";
@@ -40,7 +45,11 @@ extern "C" fn setup(modinfo: *mut ModInfo) {
 
 #[unsafe(no_mangle)]
 extern "C" fn late_load() {
-    info!("Darth Maul mod loaded");
+    info!("Darth Maul mod loading");
 
     hooks::install_hooks();
+
+    unsafe { darth_maul_cpp_init() };
+
+    info!("Darth Maul mod finished loading");
 }

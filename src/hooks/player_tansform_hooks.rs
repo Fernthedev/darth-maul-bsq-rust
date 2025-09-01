@@ -97,13 +97,18 @@ fn PlayerTransforms_Update(this: &mut GlobalNamespace::PlayerTransforms) {
         let mut right = this._rightHandTransform;
         let mut left = this._leftHandTransform;
 
-        right.set_rotation(this._headWorldRot.clone()).expect("Failed to set rotation");
-        right.set_position(this._headWorldPos.clone()).expect("Failed to set position");
+        right
+            .set_rotation(this._headWorldRot.clone())
+            .expect("Failed to set rotation");
+        right
+            .set_position(this._headWorldPos.clone())
+            .expect("Failed to set position");
         left.set_position(UnityEngine::Vector3 {
             x: 0.0,
             y: -1000.0,
             z: 0.0,
-        }).expect("Failed to set position");
+        })
+        .expect("Failed to set position");
         return;
     }
 
@@ -114,24 +119,40 @@ fn PlayerTransforms_Update(this: &mut GlobalNamespace::PlayerTransforms) {
         let swap_controllers = config.swap_controllers;
         let mut left = this._leftHandTransform;
         let mut right = this._rightHandTransform;
-        let offscreen = UnityEngine::Vector3 { x: 0.0, y: -1000.0, z: 0.0 };
+        let offscreen = UnityEngine::Vector3 {
+            x: 0.0,
+            y: -1000.0,
+            z: 0.0,
+        };
 
         match (left_handed, swap_controllers) {
             (false, false) => {
-                left.set_position(offscreen).expect("Failed to set position");
+                left.set_position(offscreen)
+                    .expect("Failed to set position");
             }
             (false, true) => {
-                right.set_position(left.get_position().expect("Failed to get position")).expect("Failed to set position");
-                right.set_rotation(left.get_rotation().expect("Failed to get rotation")).expect("Failed to set rotation");
-                left.set_position(offscreen).expect("Failed to set position");
+                right
+                    .set_position(left.get_position().expect("Failed to get position"))
+                    .expect("Failed to set position");
+                right
+                    .set_rotation(left.get_rotation().expect("Failed to get rotation"))
+                    .expect("Failed to set rotation");
+                left.set_position(offscreen)
+                    .expect("Failed to set position");
             }
             (true, false) => {
-                right.set_position(offscreen).expect("Failed to set position");
+                right
+                    .set_position(offscreen)
+                    .expect("Failed to set position");
             }
             (true, true) => {
-                left.set_position(right.get_position().expect("Failed to get position")).expect("Failed to set position");
-                left.set_rotation(right.get_rotation().expect("Failed to get rotation")).expect("Failed to set rotation");
-                right.set_position(offscreen).expect("Failed to set position");
+                left.set_position(right.get_position().expect("Failed to get position"))
+                    .expect("Failed to set position");
+                left.set_rotation(right.get_rotation().expect("Failed to get rotation"))
+                    .expect("Failed to set rotation");
+                right
+                    .set_position(offscreen)
+                    .expect("Failed to set position");
             }
         }
         return;
@@ -145,17 +166,25 @@ fn PlayerTransforms_Update(this: &mut GlobalNamespace::PlayerTransforms) {
         let left_rot = left.get_rotation().expect("Failed to get rotation");
         let left_pos = left.get_position().expect("Failed to get position");
 
-        left.set_position(right.get_position().expect("Failed to get position")).expect("Failed to set position");
-        left.set_rotation(right.get_rotation().expect("Failed to get rotation")).expect("Failed to set rotation");
+        left.set_position(right.get_position().expect("Failed to get position"))
+            .expect("Failed to set position");
+        left.set_rotation(right.get_rotation().expect("Failed to get rotation"))
+            .expect("Failed to set rotation");
 
-        right.set_position(left_pos).expect("Failed to set position");
-        right.set_rotation(left_rot).expect("Failed to set rotation");
+        right
+            .set_position(left_pos)
+            .expect("Failed to set position");
+        right
+            .set_rotation(left_rot)
+            .expect("Failed to set rotation");
         return;
     }
 }
 
 pub fn install_hooks() {
-    PlayerTransforms_Update.install().expect("Failed to install PlayerTransforms_Update hook");
+    PlayerTransforms_Update
+        .install()
+        .expect("Failed to install PlayerTransforms_Update hook");
 }
 
 // MAKE_AUTO_HOOK_MATCH(PlayerTransforms_Update, &GlobalNamespace::PlayerTransforms::Update, void, GlobalNamespace::PlayerTransforms* self)

@@ -8,8 +8,8 @@ use std::sync::Mutex;
 
 // Custom serde implementation for ColorType
 mod color_type_serde {
-    use serde::{self, Deserialize, Deserializer, Serializer};
     use bs_cordl::GlobalNamespace::ColorType;
+    use serde::{self, Deserialize, Deserializer, Serializer};
 
     pub fn serialize<S>(color: &ColorType, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -28,6 +28,7 @@ mod color_type_serde {
 }
 
 #[derive(Serialize, Deserialize)]
+#[repr(C)]
 pub struct Config {
     pub darth_maul_one_hand: bool,
     pub darth_maul_both_hands: bool,

@@ -94,7 +94,9 @@ fn NoteBasicCutInfoHelper_GetBasicCutInfo(
 
 pub fn install_hooks() {
     StandardLevelGameplayManager_Update.install().unwrap();
-    StandardLevelScenesTransitionSetupDataSO_Init.install().unwrap();
+    StandardLevelScenesTransitionSetupDataSO_Init
+        .install()
+        .unwrap();
     ColorManager_ColorForSaberType.install().unwrap();
     NoteBasicCutInfoHelper_GetBasicCutInfo.install().unwrap();
 }

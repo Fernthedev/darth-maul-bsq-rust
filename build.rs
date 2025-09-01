@@ -82,6 +82,9 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
     cc::Build::new()
         .cpp(true) // Switch to C++ library compilation.
         .file("cpp/quest_compat.cpp")
+        .file("cpp/ModifiersUI.cpp")
+        .file("cpp/EnhancedPlayFlowCoordinator.cpp")
+        .file("cpp/EnhancedPlaySettingsViewController.cpp")
         .cpp_link_stdlib("c++_static") // use libstdc++
         .flag_if_supported("-std=gnu++20")
         .flag_if_supported("-frtti")

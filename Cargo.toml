@@ -24,6 +24,7 @@ bs_cordl = { git = "https://github.com/QuestPackageManager/bs-cordl-rust.git", f
     "SaberClashEffect",
     "HapticFeedbackManager",
     "StandardLevelGameplayManager",
+    "GameplaySetupViewController",
     "StandardLevelScenesTransitionSetupDataSO",
     "IReadonlyBeatmapData",
 ] }

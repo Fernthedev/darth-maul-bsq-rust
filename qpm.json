@@ -15,23 +15,46 @@
   },
   "workspace": {
     "scripts": {
-      "build": ["cargo ndk -t arm64-v8a -o ./build build --release"],
-      "copy": ["pwsh ./scripts/copy.ps1"],
-      "cpp": ["pwsh ./scripts/make_compile_db.ps1"]
+      "build": [
+        "cargo ndk -t arm64-v8a -o ./build build --release"
+      ],
+      "copy": [
+        "pwsh ./scripts/copy.ps1"
+      ],
+      "cpp": [
+        "pwsh ./scripts/make_compile_db.ps1"
+      ]
     },
     "ndk": "^27.2.12479018",
-    "qmodIncludeDirs": ["build/arm64-v8a"],
+    "qmodIncludeDirs": [
+      "build/arm64-v8a"
+    ],
     "qmodIncludeFiles": [],
     "qmodOutput": "darth_maul_rust.qmod"
   },
   "dependencies": [
     {
       "id": "bs-cordl",
-      "versionRange": "^4007.0.0",
+      "versionRange": "^4008.0.0",
       "additionalData": {
         "includeQmod": false,
         "private": true
       }
+    },
+    {
+      "id": "bsml",
+      "versionRange": "^0.4.55",
+      "additionalData": {}
+    },
+    {
+      "id": "metacore",
+      "versionRange": "^1.6.2",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.18.3",
+      "additionalData": {}
     }
   ]
 }
