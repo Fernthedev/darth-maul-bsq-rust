@@ -1,5 +1,5 @@
 use bs_cordl::GlobalNamespace;
-use quest_hook::{hook, libil2cpp::Gc};
+use quest_hook::hook;
 
 use crate::darth_maul_invoke_GameplaySetupViewController_RefreshContent;
 

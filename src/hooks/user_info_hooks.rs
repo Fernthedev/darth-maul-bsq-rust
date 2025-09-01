@@ -1,14 +1,12 @@
 use std::sync::Mutex;
 
 use bs_cordl::{
-    GlobalNamespace::{
-        self, StandardLevelGameplayManager_GameState, StandardLevelScenesTransitionSetupDataSO,
-    },
+    GlobalNamespace::{self, StandardLevelGameplayManager_GameState},
     UnityEngine,
 };
 use quest_hook::{
     hook,
-    libil2cpp::{ByRefMut, Gc, Il2CppString},
+    libil2cpp::{ByRefMut, Gc},
 };
 
 use crate::config::CONFIG;
