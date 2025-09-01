@@ -10,7 +10,7 @@
     "url": null,
     "additionalData": {
       "overrideSoName": "libdarth_maul_rust.so",
-      "cmake": true
+      "cmake": false
     }
   },
   "workspace": {

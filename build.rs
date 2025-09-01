@@ -1,7 +1,8 @@
-use std::{
-    env,
-    path::{Path, PathBuf},
-};
+use std::env;
+use std::fs::File;
+use std::io::Write;
+
+use std::path::{Path, PathBuf};
 
 fn restore() -> Result<(), Box<dyn std::error::Error>> {
     let manifest_path = Path::new(".");
@@ -16,7 +17,6 @@ fn restore() -> Result<(), Box<dyn std::error::Error>> {
         "cargo:rerun-if-changed={}",
         manifest_path.join("qpm.shared.json").display()
     );
-
 
     let mut cmd = std::process::Command::new(qpm_path);
     cmd.current_dir(manifest_path)
@@ -65,18 +65,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     .expect("Couldn't write bindings!");
 
     build_cpp(include_dir, lib_path);
-Ok(())
+    Ok(())
 }
 
 fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
     // only compile in android linux AARCH64
-    let quest = cfg!(target_os = "android") && cfg!(target_arch = "aarch64");
-    if !quest  {
+    let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
+    let target_arch = std::env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
+    let quest = target_os == "android" && target_arch == "aarch64";
+    if !quest {
         return;
-    } 
+    }
+
+    if let Err(e) = gen_compile_db() {
+        eprintln!("Failed to generate compile_commands.json: {}", e);
+    }
 
     println!("cargo:rustc-link-search={}", lib_path.display());
-    
+
     cc::Build::new()
         .cpp(true) // Switch to C++ library compilation.
         .file("cpp/quest_compat.cpp")
@@ -134,4 +140,4 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         .include(include_dir.join("bs-cordl").join("include"))
         .include(include_dir)
         .compile("quest_compat");
-    }
+}
