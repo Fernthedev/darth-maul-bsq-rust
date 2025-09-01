@@ -77,10 +77,6 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         return;
     }
 
-    if let Err(e) = gen_compile_db() {
-        eprintln!("Failed to generate compile_commands.json: {}", e);
-    }
-
     println!("cargo:rustc-link-search={}", lib_path.display());
 
     cc::Build::new()
