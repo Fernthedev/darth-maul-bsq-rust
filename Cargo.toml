@@ -7,6 +7,18 @@ rust-version = "1.90"
 [lib]
 crate-type = ["cdylib"]
 
+[profile.release]
+opt-level = 3
+panic = "abort"
+lto = true
+codegen-units = 1
+debug = "line-tables-only"
+
+[profile.dev]
+panic = "abort" 
+split-debuginfo = "packed"
+
+
 [dependencies]
 paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing" }
 quest_hook = { git = "https://github.com/Fernthedev/quest-hook-rs.git", features = [
