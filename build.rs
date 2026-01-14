@@ -6,22 +6,22 @@ fn restore() -> Result<(), Box<dyn std::error::Error>> {
     let manifest_path = Path::new(".");
     let qpm_path = PathBuf::from(env::var("QPM_PATH").unwrap_or_else(|_| "qpm".into()));
 
-    // change if qpm.shared.json modified
-    println!(
-        "cargo:rerun-if-changed={}",
-        manifest_path.join("qpm.json").display()
-    );
-    println!(
-        "cargo:rerun-if-changed={}",
-        manifest_path.join("qpm.shared.json").display()
-    );
-
     let mut cmd = std::process::Command::new(qpm_path);
     cmd.current_dir(manifest_path)
         .arg("restore")
         // .arg("--quiet")
         .status()
         .map_err(|e| format!("Failed to run qpm: {}", e))?;
+
+    // change if qpm.shared.json modified
+    println!(
+        "cargo:rerun-if-changed={}",
+        manifest_path.join("qpm.json").display()
+    );
+    // println!(
+    //     "cargo:rerun-if-changed={}",
+    //     manifest_path.join("qpm.shared.json").display()
+    // );
 
     Ok(())
 }
