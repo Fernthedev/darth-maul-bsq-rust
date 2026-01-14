@@ -10,17 +10,15 @@
 
 #include "GlobalNamespace/GameplayModifiersPanelController.hpp"
 #include "GlobalNamespace/GameplaySetupViewController.hpp"
-#include "UnityEngine/Events/UnityAction.hpp"
-#include "UnityEngine/Events/UnityAction_1.hpp"
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Quaternion.hpp"
-#include "UnityEngine/RectOffset.hpp"
-#include "UnityEngine/Resources.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+
 #include "UnityEngine/Vector3.hpp"
+
 #define MakeDelegate(DelegateType, varName) il2cpp_utils::MakeDelegate<DelegateType>(classof(DelegateType), varName))
 
 BSML::IncrementSetting *modifiersIncrementSetting;
@@ -76,7 +74,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
 
   if (modifiersIncrementSetting == nullptr) {
 
-    auto panel = self->gameplayModifiersPanelController;
+    auto panel = self;
 
     defaultModifiersView = panel->get_transform()->Find("Modifiers");
     customModifierContainer =
@@ -100,10 +98,11 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
         (config->darth_maul_one_hand || config->darth_maul_both_hands),
         [=](bool val) {
           if (val) {
-            HMUI::ModalView *DarthMaulModal = BSML::Lite::CreateModal(
+            HMUI::ModalView *DarthMaulModal = nullptr;
+            DarthMaulModal = BSML::Lite::CreateModal(
                 panel->get_transform(),
-                [=](auto modal) {
-                  UnityEngine::GameObject::Destroy(modal);
+                [&]() {
+                  UnityEngine::GameObject::Destroy(DarthMaulModal);
                   if (!(config->darth_maul_both_hands ||
                         config->darth_maul_one_hand)) {
                     DM1Button->set_isOn(false);
@@ -119,7 +118,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
                 false, [=](bool val) {
                   DarthMaulModal->Hide(true, nullptr);
                   if (UCMButton->m_IsOn) {
-                    config.unicorn_mode = false;
+                    config->unicorn_mode = false;
                     UCMButton->set_isOn(false);
                   }
                   if (OneSaber->m_IsOn) {
