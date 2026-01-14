@@ -9,6 +9,7 @@ use tracing::info;
 pub mod config;
 pub mod hooks;
 
+#[link(name = "quest_compat", kind = "static")]
 unsafe extern "C" {
     fn darth_maul_cpp_init();
 
