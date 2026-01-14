@@ -1,5 +1,5 @@
-& cargo ndk --bindgen -t arm64-v8a -o ./build/debug build # --release
-& adb push ./build/debug/arm64-v8a/libparty_panel.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libparty_panel.so
+& cargo ndk -t arm64-v8a -o ./build/debug build # --release
+& adb push ./build/debug/arm64-v8a/libdarth_maul_rust.so /sdcard/ModData/com.beatgames.beatsaber/Modloader/mods/libdarth_maul_rust.so
 
 & adb shell am force-stop com.beatgames.beatsaber
 & adb shell am start com.beatgames.beatsaber/com.unity3d.player.UnityPlayerActivity
