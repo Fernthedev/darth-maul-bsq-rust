@@ -39,8 +39,10 @@ extern "C" fn setup(modinfo: *mut ModInfo) {
 
     // setup quest-hook
     // which will setup tracing and panic logging
-    // TODO: Use paper?
-    quest_hook::setup("PinkCute");
+    quest_hook::setup("DarthMaul");
+
+    use paper2_tracing::init_paper_tracing;
+    init_paper_tracing(Some("DarthMaul".to_owned())).expect("Failed to init paper tracing");
 }
 
 #[unsafe(no_mangle)]
