@@ -36,6 +36,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // run qpm restore
     restore().expect("Failed to restore dependencies");
 
+    setup_linker_defaults();
+
     // cbindgen::Builder::new()
     //   .with_crate(&manifest_path)
     //   .generate()
@@ -181,13 +183,21 @@ fn linker_flags(lib_path: PathBuf) {
         println!("cargo:rustc-link-lib={}", lib);
     }
 
-    println!("cargo:rustc-link-lib=static=c++");
-    println!("cargo:rustc-link-lib=static=c++abi");
-    println!("cargo:rustc-link-lib=static=unwind");
+    // println!("cargo:rustc-link-lib=static=c++abi");
+    // println!("cargo:rustc-link-lib=static=unwind");
 
+
+}
+
+fn setup_linker_defaults() {
     println!("cargo:rustc-link-arg=-Wl,--no-undefined");
     println!("cargo:rustc-link-arg=-Wl,--no-undefined-version");
     println!("cargo:rustc-link-arg=-Wl,--fatal-warnings");
     println!("cargo:rustc-link-arg=-Wl,--gc-sections");
     println!("cargo:rustc-link-arg=-Wl,-z,defs");
+
+    // TODO: How to avoid this?
+    if cfg!(target_os = "android") {
+        println!("cargo:rustc-link-lib=static=c++");
+    }
 }
