@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::LazyLock};
+use std::{ops::DerefMut, path::PathBuf, sync::LazyLock};
 
 use bs_cordl::GlobalNamespace::ColorType;
 use serde::{Deserialize, Serialize};
@@ -104,4 +104,16 @@ impl Default for Config {
             disable_rumble: false,
         }
     }
+}
+
+#[unsafe(no_mangle)]
+extern "C" fn darth_maul_get_config() -> *mut Config {
+    CONFIG.lock().unwrap().deref_mut() as *mut Config
+}
+
+#[unsafe(no_mangle)]
+extern "C" fn darth_maul_save_config(config: *mut Config) {
+    // let config = CONFIG.lock().unwrap();
+    let config = unsafe { &mut *config };
+    config.write().expect("Failed to write config");
 }
