@@ -84,17 +84,20 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         .file("cpp/EnhancedPlayFlowCoordinator.cpp")
         .file("cpp/EnhancedPlaySettingsViewController.cpp")
         .cpp_link_stdlib("c++_static") // use libstdc++
+        .pic(true)
         .flag_if_supported("-std=gnu++20")
+        .flag_if_supported("-fPIC")
+        .flag_if_supported("-fPIE")
         .flag_if_supported("-frtti")
         .flag_if_supported("-fexceptions")
         .flag_if_supported("-fdeclspec")
         .flag_if_supported("-Wno-invalid-offsetof")
-        .flag("-DUNITY_2021")
-        .flag("-DUNITY_2022")
-        .flag("-DHAS_CODEGEN")
-        .flag("-DNEED_UNSAFE_CSHARP")
-        .flag("-DQUEST")
-        .flag("-DFMT_HEADER_ONLY")
+        .define("UNITY_2021", None)
+        .define("UNITY_2022", None)
+        .define("HAS_CODEGEN", None)
+        .define("NEED_UNSAFE_CSHARP", None)
+        .define("QUEST", None)
+        .define("FMT_HEADER_ONLY", None)
         // system include
         .flag(format!(
             "-isystem{}",
