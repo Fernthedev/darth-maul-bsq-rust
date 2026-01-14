@@ -192,6 +192,7 @@ dependencies = [
 [[package]]
 name = "inline_hook"
 version = "0.1.0"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#c50f672d80ed09265f1dd061abfbcf545ef392f6"
 dependencies = [
  "cc",
  "cfg-if",
@@ -234,6 +235,7 @@ checksum = "bcc35a38544a891a5f7c865aca548a982ccb3b8650a5b06d0fd33a10283c56fc"
 [[package]]
 name = "libil2cpp"
 version = "0.1.0"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#c50f672d80ed09265f1dd061abfbcf545ef392f6"
 dependencies = [
  "bindgen",
  "libloading 0.9.0",
@@ -426,6 +428,7 @@ dependencies = [
 [[package]]
 name = "quest_hook"
 version = "0.1.0"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#c50f672d80ed09265f1dd061abfbcf545ef392f6"
 dependencies = [
  "cfg-if",
  "inline_hook",
@@ -441,6 +444,7 @@ dependencies = [
 [[package]]
 name = "quest_hook_proc_macros"
 version = "0.1.0"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#c50f672d80ed09265f1dd061abfbcf545ef392f6"
 dependencies = [
  "heck",
  "proc-macro2",

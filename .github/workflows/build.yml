@@ -54,12 +54,8 @@ jobs:
             ${{ runner.os }}-cargo-target-
 
       - name: Build
-        run: qpm s build
-
-      - name: Build
         run: |
           cd ${GITHUB_WORKSPACE}
-          qpm-rust s build
           qpm-rust qmod zip
 
       - name: Upload non-debug artifact

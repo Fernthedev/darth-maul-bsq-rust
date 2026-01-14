@@ -37,8 +37,8 @@ anyhow = { version = "1.0", features = ["backtrace"] }
 [patch.crates-io]
 retour = { git = "https://github.com/workingjubilee/hpmason-retour-rs.git", branch = "fix-retour-for-unsupported-fn-ptr-calling-conventions" }
 
-[patch."https://github.com/Fernthedev/quest-hook-rs.git"]
-quest_hook = { path = "../quest-hook-rs" }
+# [patch."https://github.com/Fernthedev/quest-hook-rs.git"]
+# quest_hook = { path = "../quest-hook-rs" }
 
 
 [build-dependencies]
