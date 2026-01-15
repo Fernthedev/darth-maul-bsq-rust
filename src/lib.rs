@@ -6,6 +6,8 @@ use bs_cordl::GlobalNamespace;
 use quest_hook::libil2cpp::Gc;
 use tracing::info;
 
+use crate::config::Config;
+
 pub mod config;
 pub mod hooks;
 
@@ -40,15 +42,22 @@ extern "C" fn setup(modinfo: *mut ModInfo) {
 
     // setup quest-hook
     // which will setup tracing and panic logging
-    quest_hook::setup("DarthMaul");
+    // quest_hook::setup("DarthMaul");
 
     use paper2_tracing::init_paper_tracing;
     init_paper_tracing(Some("DarthMaul".to_owned())).expect("Failed to init paper tracing");
+
+    std::panic::set_hook(quest_hook::panic_hook(true, true));
 }
 
 #[unsafe(no_mangle)]
 extern "C" fn late_load() {
     info!("Darth Maul mod loading");
+
+    info!("Load config from disk {}", Config::config_path().display());
+    let _config = config::CONFIG.lock().unwrap();
+
+    info!("Installing hooks");
 
     hooks::install_hooks();
 
