@@ -56,6 +56,11 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         return;
     }
 
+    // only compile if the ui feature is enabled
+    if !cfg!(feature = "ui") {
+        return;
+    }
+
     linker::linker_flags(lib_path);
 
     let files = [

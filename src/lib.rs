@@ -11,6 +11,7 @@ use crate::config::Config;
 pub mod config;
 pub mod hooks;
 
+#[cfg(feature = "ui")]
 #[link(name = "quest_compat", kind = "static")]
 unsafe extern "C" {
     fn darth_maul_cpp_init();
@@ -44,8 +45,10 @@ extern "C" fn setup(modinfo: *mut ModInfo) {
     // which will setup tracing and panic logging
     // quest_hook::setup("DarthMaul");
 
+    #[cfg(target_os = "android")] {
     use paper2_tracing::init_paper_tracing;
     init_paper_tracing(Some("DarthMaul".to_owned())).expect("Failed to init paper tracing");
+    }
 
     std::panic::set_hook(quest_hook::panic_hook(true, true));
 }
@@ -61,6 +64,7 @@ extern "C" fn late_load() {
 
     hooks::install_hooks();
 
+    #[cfg(feature = "ui")]
     unsafe { darth_maul_cpp_init() };
 
     info!("Darth Maul mod finished loading");

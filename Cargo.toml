@@ -28,9 +28,10 @@ panic = "abort"
 codegen-backend = "cranelift"
 # split-debuginfo = "packed"
 
+[target.'cfg(target_os = "android")'.dependencies]
+paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing" }
 
 [dependencies]
-paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing" }
 quest_hook = { git = "https://github.com/Fernthedev/quest-hook-rs.git", features = [
     "il2cpp_v31",
 ], branch = "cordl-fixes" }
