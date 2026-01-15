@@ -1,6 +1,6 @@
 use bs_cordl::GlobalNamespace::{
     BeatmapObjectSpawnController, NoteData, NoteData_GameplayType, NoteData_ScoringType,
-    NoteLineLayer,
+    NoteLineLayer, SliderData, SliderData_Type,
 };
 use quest_hook::{hook, libil2cpp::Gc};
 
@@ -78,13 +78,12 @@ fn BeatmapObjectSpawnController_HandleNoteDataCallback(
 #[hook("", "BeatmapObjectSpawnController", "HandleSliderDataCallback")]
 fn BeatmapObjectSpawnController_HandleSliderDataCallback(
     this: &mut BeatmapObjectSpawnController,
-    mut slider_note_data: Gc<NoteData>,
+    mut slider_note_data: Gc<SliderData>,
 ) {
     let config = CONFIG.lock().unwrap();
     if config.one_colour {
         if config.one_saber {
             let to_check_for = config.main_hand;
-
             if slider_note_data.get_colorType().unwrap() == to_check_for {
                 return;
             }
@@ -94,23 +93,16 @@ fn BeatmapObjectSpawnController_HandleSliderDataCallback(
                 .expect("Failed to set color type");
         }
     }
-    if config.ignore_burst_sliders {
-        if slider_note_data.get_gameplayType().unwrap() == NoteData_GameplayType::BurstSliderHead {
+
+    if config.ignore_burst_sliders
+        && slider_note_data.get_sliderType().unwrap() == SliderData_Type::Burst {
             return;
         }
 
-        if slider_note_data.get_scoringType().unwrap() == NoteData_ScoringType::ChainHead
-            || slider_note_data.get_scoringType().unwrap() == NoteData_ScoringType::ChainLink
-        {
+    if config.ignore_arc_sliders
+        && slider_note_data.get_sliderType().unwrap() == SliderData_Type::Normal {
             return;
         }
-    }
-    if config.ignore_arc_sliders
-        && (slider_note_data.get_scoringType().unwrap() == NoteData_ScoringType::ArcTail
-            || slider_note_data.get_scoringType().unwrap() == NoteData_ScoringType::ArcHead)
-    {
-        return;
-    }
 
     BeatmapObjectSpawnController_HandleSliderDataCallback.original(this, slider_note_data);
 }
@@ -118,8 +110,8 @@ fn BeatmapObjectSpawnController_HandleSliderDataCallback(
 pub fn install_hooks() {
     BeatmapObjectSpawnController_HandleNoteDataCallback
         .install()
-        .unwrap();
+        .expect("Failed to install BeatmapObjectSpawnController_HandleNoteDataCallback hook");
     BeatmapObjectSpawnController_HandleSliderDataCallback
         .install()
-        .unwrap();
+        .expect("Failed to install BeatmapObjectSpawnController_HandleSliderDataCallback hook");
 }
