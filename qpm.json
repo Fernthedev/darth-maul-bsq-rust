@@ -18,11 +18,17 @@
       "build": [
         "cargo ndk --link-builtins -t arm64-v8a -o ./build build --release"
       ],
+      "dev": [
+        "cargo ndk --link-builtins -t arm64-v8a -o ./build/debug build"
+      ],
       "copy": [
         "pwsh ./scripts/copy.ps1"
       ],
       "cpp": [
         "pwsh ./scripts/make_compile_db.ps1"
+      ],
+      "ndk-stack": [
+        "pwsh ./scripts/ndk-stack.ps1"
       ]
     },
     "ndk": "^27.2.12479018",

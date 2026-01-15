@@ -24,6 +24,12 @@
         ],
         "cpp": [
           "pwsh ./scripts/make_compile_db.ps1"
+        ],
+        "dev": [
+          "cargo ndk --link-builtins -t arm64-v8a -o ./build/debug build"
+        ],
+        "ndk-stack": [
+          "pwsh ./scripts/ndk-stack.ps1"
         ]
       },
       "ndk": "^27.2.12479018",
