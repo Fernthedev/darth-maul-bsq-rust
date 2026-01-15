@@ -2,8 +2,6 @@
 
 use std::ffi::{CStr, CString, c_char};
 
-use bs_cordl::GlobalNamespace;
-use quest_hook::libil2cpp::Gc;
 use tracing::info;
 
 use crate::config::Config;
@@ -45,9 +43,10 @@ extern "C" fn setup(modinfo: *mut ModInfo) {
     // which will setup tracing and panic logging
     // quest_hook::setup("DarthMaul");
 
-    #[cfg(target_os = "android")] {
-    use paper2_tracing::init_paper_tracing;
-    init_paper_tracing(Some("DarthMaul".to_owned())).expect("Failed to init paper tracing");
+    #[cfg(all(target_os = "android", feature = "paper2"))]
+    {
+        use paper2_tracing::init_paper_tracing;
+        init_paper_tracing(Some("DarthMaul".to_owned())).expect("Failed to init paper tracing");
     }
 
     std::panic::set_hook(quest_hook::panic_hook(true, true));
@@ -65,7 +64,9 @@ extern "C" fn late_load() {
     hooks::install_hooks();
 
     #[cfg(feature = "ui")]
-    unsafe { darth_maul_cpp_init() };
+    unsafe {
+        darth_maul_cpp_init()
+    };
 
     info!("Darth Maul mod finished loading");
 }

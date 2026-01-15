@@ -10,8 +10,12 @@ rust-version = "1.90"
 crate-type = ["cdylib"]
 
 [features]
-default = []
-ui = []
+default = ["paper2"]
+paper2 = ["dep:paper2_tracing", "cpp"]
+# Enable UI features (C++ code)
+ui = ["cpp"]
+# whether to compile the C++ code and link the extern libs
+cpp = ["dep:cc"]
 
 [profile.release]
 opt-level = 3
@@ -29,7 +33,7 @@ codegen-backend = "cranelift"
 # split-debuginfo = "packed"
 
 [target.'cfg(target_os = "android")'.dependencies]
-paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing" }
+paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing", optional = true }
 
 [dependencies]
 quest_hook = { git = "https://github.com/Fernthedev/quest-hook-rs.git", features = [
@@ -66,5 +70,5 @@ retour = { git = "https://github.com/workingjubilee/hpmason-retour-rs.git", bran
 
 
 [build-dependencies]
-cc = { version = "1.2", features = ["parallel"] }
+cc = { version = "1.2", features = ["parallel"], optional = true}
 quest_build_helper = { git = "https://github.com/Fernthedev/quest-hook-rs.git", branch = "cordl-fixes", package = "quest_build_helper" }
