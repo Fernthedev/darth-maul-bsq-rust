@@ -28,14 +28,16 @@ UnityEngine::Transform *defaultModifiersView;
 
 UnityEngine::Color positiveColourValue;
 
-UnityEngine::UI::Toggle *DM1Button;
-UnityEngine::UI::Toggle *UCMButton;
-UnityEngine::UI::Toggle *OneSaber;
-UnityEngine::UI::Toggle *OneColour;
-UnityEngine::UI::Toggle *SwapTopBottomRow;
-UnityEngine::UI::Toggle *HalfNotes;
-UnityEngine::UI::Toggle *IgnoreChains;
-UnityEngine::UI::Toggle *IgnoreArcs;
+SafePtr<UnityEngine::UI::Toggle> DM1Button;
+SafePtr<UnityEngine::UI::Toggle> UCMButton;
+SafePtr<UnityEngine::UI::Toggle> OneSaber;
+SafePtr<UnityEngine::UI::Toggle> OneColour;
+SafePtr<UnityEngine::UI::Toggle> SwapTopBottomRow;
+SafePtr<UnityEngine::UI::Toggle> HalfNotes;
+SafePtr<UnityEngine::UI::Toggle> IgnoreChains;
+SafePtr<UnityEngine::UI::Toggle> IgnoreArcs;
+
+HMUI::ModalView *DarthMaulModal;
 
 UnityEngine::UI::LayoutElement *
 getLayoutElement(UnityEngine::GameObject *object) {
@@ -49,7 +51,7 @@ getLayoutElement(UnityEngine::GameObject *object) {
 UnityEngine::UI::Toggle *
 createEmptyModifierButton(UnityEngine::Transform *transform) {
   UnityEngine::UI::Toggle *modifToggle = BSML::Lite::CreateModifierButton(
-      transform, "", false, nullptr, [=](bool val) {});
+      transform, "", false, nullptr, [](bool val) {});
   modifToggle->m_Interactable = false;
   modifToggle->get_transform()->Find("BG")->get_gameObject()->SetActive(false);
   return modifToggle;
@@ -96,12 +98,11 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     DM1Button = BSML::Lite::CreateModifierButton(
         horzGroup1->get_transform(), "Darth Maul",
         (config->darth_maul_one_hand || config->darth_maul_both_hands),
-        [=](bool val) {
+        [config, panel](bool val) {
           if (val) {
-            HMUI::ModalView *DarthMaulModal = nullptr;
             DarthMaulModal = BSML::Lite::CreateModal(
                 panel->get_transform(),
-                [&]() {
+                [config]() {
                   UnityEngine::GameObject::Destroy(DarthMaulModal);
                   if (!(config->darth_maul_both_hands ||
                         config->darth_maul_one_hand)) {
@@ -115,7 +116,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
                 ->set_preferredWidth(30.0);
             BSML::Lite::CreateModifierButton(
                 DarthMaulContainer->get_transform(), "Darth Maul (One Hand)",
-                false, [=](bool val) {
+                false, [config](bool val) {
                   DarthMaulModal->Hide(true, nullptr);
                   if (UCMButton->m_IsOn) {
                     config->unicorn_mode = false;
@@ -133,7 +134,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
             createEmptyModifierButton(DarthMaulContainer->get_transform());
             BSML::Lite::CreateModifierButton(
                 DarthMaulContainer->get_transform(), "Darth Maul (Two Hands)",
-                false, [=](bool val) {
+                false, [config](bool val) {
                   DarthMaulModal->Hide(true, nullptr);
                   if (UCMButton->m_IsOn) {
                     config->unicorn_mode = false;
@@ -161,7 +162,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     UCMButton = BSML::Lite::CreateModifierButton(
         horzGroup1->get_transform(),
         "Unicorn Mode<br><color=#f22>Disables Score Submission</color>",
-        config->unicorn_mode, [=](bool val) {
+        config->unicorn_mode, [config](bool val) {
           config->unicorn_mode = val;
           if (val) {
             if (DM1Button->m_IsOn) {
@@ -184,7 +185,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     OneSaber = BSML::Lite::CreateModifierButton(
         horzGroup1->get_transform(),
         "Single Saber<br><color=#f22>Disables Score Submission</color>",
-        config->one_saber, [=](bool val) {
+        config->one_saber, [config](bool val) {
           config->one_saber = val;
 
           if (val) {
@@ -208,7 +209,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     OneColour = BSML::Lite::CreateModifierButton(
         horzGroup2->get_transform(),
         "Single Colour<br><color=#f22>Disables Score Submission</color>",
-        config->one_colour, [=](bool val) {
+        config->one_colour, [config](bool val) {
           if (!val && config->unicorn_mode) {
             OneColour->set_isOn(true);
             return;
@@ -229,7 +230,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     SwapTopBottomRow = BSML::Lite::CreateModifierButton(
         horzGroup2->get_transform(),
         "TECH<br><color=#f22>Disables Score Submission</color>",
-        config->swap_top_and_bottom_row, [=](bool val) {
+        config->swap_top_and_bottom_row, [config](bool val) {
           if (!IgnoreChains->m_IsOn) {
             config->ignore_burst_sliders = true;
             IgnoreChains->set_isOn(true);
@@ -248,7 +249,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     HalfNotes = BSML::Lite::CreateModifierButton(
         horzGroup2->get_transform(),
         "Half Notes<br><color=#f22>Disables Score Submission</color>",
-        config->half_notes, [=](bool val) {
+        config->half_notes, [config](bool val) {
           config->half_notes = val;
 
           darth_maul_save_config(*config);
@@ -258,7 +259,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     IgnoreChains = BSML::Lite::CreateModifierButton(
         horzGroup3->get_transform(),
         "Ignore Chains<br><color=#f22>Disables Score Submission</color>",
-        config->ignore_burst_sliders, [=](bool val) {
+        config->ignore_burst_sliders, [config](bool val) {
           if (!val && config->swap_top_and_bottom_row) {
             IgnoreChains->set_isOn(true);
             return;
@@ -273,7 +274,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
     IgnoreArcs = BSML::Lite::CreateModifierButton(
         horzGroup3->get_transform(),
         "Ignore Arcs<br><color=#f22>Disables Score Submission</color>",
-        config->ignore_arc_sliders, [=](bool val) {
+        config->ignore_arc_sliders, [config](bool val) {
           if (!val && config->swap_top_and_bottom_row) {
             IgnoreArcs->set_isOn(true);
             return;
@@ -293,7 +294,7 @@ extern "C" void darth_maul_invoke_GameplaySetupViewController_RefreshContent(
 
     modifiersIncrementSetting = BSML::Lite::CreateIncrementSetting(
         panel->get_transform(), "Select Modifiers", 0, 1.0, 0.0, true, true,
-        0.0, 1.0, {0, 0}, [=](float val) {
+        0.0, 1.0, {0, 0}, [config](float val) {
           if (val == 0.0) {
             modifiersIncrementSetting->set_text("Default Modifiers");
             defaultModifiersView->get_gameObject()->SetActive(true);
