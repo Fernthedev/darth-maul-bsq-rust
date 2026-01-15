@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download mold
+        run: sudo apt install mold -y  
+
       - name: Setup Rust Nightly
         run: |
           rustup default nightly
