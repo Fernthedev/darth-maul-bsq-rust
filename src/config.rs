@@ -23,11 +23,16 @@ mod color_type_serde {
         D: Deserializer<'de>,
     {
         let v = i32::deserialize(deserializer)?;
-        Ok(unsafe { std::mem::transmute(v) })
+        Ok(match v {
+            0 => ColorType::ColorA,
+            1 => ColorType::ColorB,
+            -1 => ColorType::None,
+            _ => ColorType::default(),
+        })
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 #[repr(C)]
 pub struct Config {
     pub darth_maul_one_hand: bool,
@@ -40,7 +45,7 @@ pub struct Config {
     pub half_notes: bool,
     pub ignore_burst_sliders: bool,
     pub ignore_arc_sliders: bool,
-    #[serde(with = "color_type_serde")]
+    #[serde(with = "color_type_serde", default)]
     pub main_hand: ColorType,
     pub disable_rumble: bool,
 }
@@ -51,7 +56,7 @@ pub static CONFIG: LazyLock<Mutex<Config>> = LazyLock::new(|| {
 });
 
 impl Config {
-    fn config_path() -> PathBuf {
+    pub fn config_path() -> PathBuf {
         // https://github.com/QuestPackageManager/beatsaber-hook/blob/cb4d28151b25ac5eda7acc330f4e71e918f8bf71/shared/config/config-utils.hpp#L19-L24
         // /sdcard/ModData/{}/Configs/
 
@@ -59,10 +64,10 @@ impl Config {
         let game_path = "com.beatgames.beatsaber"; // Beatsaber package name
         let mod_id = MOD_ID.to_string_lossy();
 
-        format!("/sdcard/ModData/{game_path}/Configs/{mod_id}").into()
+        format!("/sdcard/ModData/{game_path}/Configs/{mod_id}.json").into()
     }
 
-    fn read() -> anyhow::Result<Self> {
+    pub fn read() -> anyhow::Result<Self> {
         let path = Self::config_path();
 
         if !path.exists() {
@@ -107,8 +112,8 @@ impl Default for Config {
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn darth_maul_get_config() -> *mut Config {
-    CONFIG.lock().unwrap().deref_mut() as *mut Config
+extern "C" fn darth_maul_get_config() -> Config {
+    CONFIG.lock().unwrap().deref_mut().clone()
 }
 
 #[unsafe(no_mangle)]
