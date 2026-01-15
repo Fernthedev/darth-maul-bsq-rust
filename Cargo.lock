@@ -134,6 +134,7 @@ dependencies = [
  "bs_cordl",
  "cc",
  "paper2_tracing",
+ "quest_build_helper",
  "quest_hook",
  "serde",
  "serde_json",
@@ -192,7 +193,7 @@ dependencies = [
 [[package]]
 name = "inline_hook"
 version = "0.1.0"
-source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#35eac474ab61e850ceedb1dd97f5cccc343e367d"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#704fdec51d7d8c3c829906c45a2c419fa5b3196f"
 dependencies = [
  "cc",
  "cfg-if",
@@ -235,7 +236,7 @@ checksum = "bcc35a38544a891a5f7c865aca548a982ccb3b8650a5b06d0fd33a10283c56fc"
 [[package]]
 name = "libil2cpp"
 version = "0.1.0"
-source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#35eac474ab61e850ceedb1dd97f5cccc343e367d"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#704fdec51d7d8c3c829906c45a2c419fa5b3196f"
 dependencies = [
  "bindgen",
  "libloading 0.9.0",
@@ -426,9 +427,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "quest_build_helper"
+version = "0.1.0"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#704fdec51d7d8c3c829906c45a2c419fa5b3196f"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "quest_hook"
 version = "0.1.0"
-source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#35eac474ab61e850ceedb1dd97f5cccc343e367d"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#704fdec51d7d8c3c829906c45a2c419fa5b3196f"
 dependencies = [
  "cfg-if",
  "inline_hook",
@@ -444,7 +453,7 @@ dependencies = [
 [[package]]
 name = "quest_hook_proc_macros"
 version = "0.1.0"
-source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#35eac474ab61e850ceedb1dd97f5cccc343e367d"
+source = "git+https://github.com/Fernthedev/quest-hook-rs.git?branch=cordl-fixes#704fdec51d7d8c3c829906c45a2c419fa5b3196f"
 dependencies = [
  "heck",
  "proc-macro2",

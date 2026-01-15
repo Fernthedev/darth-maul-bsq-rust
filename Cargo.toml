@@ -15,7 +15,7 @@ codegen-units = 1
 debug = "line-tables-only"
 
 [profile.dev]
-panic = "abort" 
+panic = "abort"
 split-debuginfo = "packed"
 
 
@@ -55,6 +55,7 @@ retour = { git = "https://github.com/workingjubilee/hpmason-retour-rs.git", bran
 
 [build-dependencies]
 cc = "1.2"
+quest_build_helper = { git = "https://github.com/Fernthedev/quest-hook-rs.git", branch = "cordl-fixes", package = "quest_build_helper" }
 
 [workspace]
 

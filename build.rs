@@ -1,31 +1,9 @@
-use std::collections::HashSet;
-use std::{env, fs};
+use std::env;
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-fn restore() -> Result<(), Box<dyn std::error::Error>> {
-    let manifest_path = Path::new(".");
-    let qpm_path = PathBuf::from(env::var("QPM_PATH").unwrap_or_else(|_| "qpm".into()));
-
-    let mut cmd = std::process::Command::new(qpm_path);
-    cmd.current_dir(manifest_path)
-        .arg("restore")
-        // .arg("--quiet")
-        .status()
-        .map_err(|e| format!("Failed to run qpm: {}", e))?;
-
-    // change if qpm.shared.json modified
-    println!(
-        "cargo:rerun-if-changed={}",
-        manifest_path.join("qpm.json").display()
-    );
-    // println!(
-    //     "cargo:rerun-if-changed={}",
-    //     manifest_path.join("qpm.shared.json").display()
-    // );
-
-    Ok(())
-}
+use quest_build_helper::cc::QuestCpp;
+use quest_build_helper::{linker, qpm};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -34,9 +12,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let lib_path = manifest_path.join("extern").join("libs");
 
     // run qpm restore
-    restore().expect("Failed to restore dependencies");
+    qpm::restore(&manifest_path).expect("Failed to restore dependencies");
 
-    setup_linker_defaults();
+    linker::setup_linker_defaults();
 
     // cbindgen::Builder::new()
     //   .with_crate(&manifest_path)
@@ -78,7 +56,7 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         return;
     }
 
-    linker_flags(lib_path);
+    linker::linker_flags(lib_path);
 
     cc::Build::new()
         .cpp(true) // Switch to C++ library compilation.
@@ -86,8 +64,13 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         .file("cpp/ModifiersUI.cpp")
         .file("cpp/EnhancedPlayFlowCoordinator.cpp")
         .file("cpp/EnhancedPlaySettingsViewController.cpp")
-        .cpp_link_stdlib("c++_static") // use libstdc++
-        .pic(true)
+        // Add quest defaults, defines and includes
+        .add_quest_defaults()
+        .add_quest_defines()
+        .add_il2cpp_includes(&include_dir)
+        .add_fmt_includes(&include_dir)
+        .add_cordl_includes(&include_dir)
+        // we use C++ 20 features
         .flag_if_supported("-std=gnu++20")
         .flag_if_supported("-fPIC")
         .flag_if_supported("-fPIE")
@@ -101,103 +84,6 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
         .define("NEED_UNSAFE_CSHARP", None)
         .define("QUEST", None)
         .define("FMT_HEADER_ONLY", None)
-        // system include
-        .flag(format!(
-            "-isystem{}",
-            include_dir // fmt/fmt/include
-                .join("fmt")
-                .join("fmt")
-                .join("include")
-                .display()
-        ))
-        .flag(format!(
-            "-isystem{}",
-            include_dir // libil2cpp/il2cpp/libil2cpp
-                .join("libil2cpp")
-                .join("il2cpp")
-                .join("libil2cpp")
-                .display()
-        ))
-        .flag(format!(
-            "-isystem{}",
-            include_dir // baselib include
-                .join("libil2cpp")
-                .join("il2cpp")
-                .join("external")
-                .join("baselib")
-                .join("Include")
-                .display()
-        ))
-        .flag(format!(
-            "-isystem{}",
-            include_dir // baselib android include
-                .join("libil2cpp")
-                .join("il2cpp")
-                .join("external")
-                .join("baselib")
-                .join("Platforms")
-                .join("Android")
-                .join("Include")
-                .display()
-        ))
-        .include(include_dir.join("bs-cordl").join("include"))
         .include(include_dir)
         .compile("quest_compat");
-}
-
-/// Linker flags for dynamic libs in lib_path e.g qpm extern libs
-fn linker_flags(lib_path: PathBuf) {
-    println!("cargo:rustc-link-search={}", lib_path.display());
-
-    let mut to_link_libs = HashSet::new();
-
-    // link dynamic libs
-    for lib in fs::read_dir(lib_path).expect("Extern lib path not found") {
-        let lib = lib.expect("Failed to read extern lib path").path();
-        let Some(ext) = lib.extension() else { continue };
-        if ext != "so" {
-            continue;
-        }
-        let Some(filename) = lib.file_name() else {
-            continue;
-        };
-        let Some(filename_str) = filename.to_str() else {
-            continue;
-        };
-
-        if filename_str.starts_with("lib") && filename_str.ends_with(".so") {
-            let lib_name = &filename_str[3..filename_str.len() - 3];
-            to_link_libs.insert(lib_name.to_owned());
-        }
-    }
-
-    for lib in &to_link_libs {
-        if lib.ends_with(".debug.so")
-            && to_link_libs.contains(lib.replace(".debug.so", ".so").as_str())
-        {
-            // skip debug lib if normal lib exists
-            continue;
-        }
-
-        
-        println!("cargo:rustc-link-lib={}", lib);
-    }
-
-    // println!("cargo:rustc-link-lib=static=c++abi");
-    // println!("cargo:rustc-link-lib=static=unwind");
-
-
-}
-
-fn setup_linker_defaults() {
-    println!("cargo:rustc-link-arg=-Wl,--no-undefined");
-    println!("cargo:rustc-link-arg=-Wl,--no-undefined-version");
-    println!("cargo:rustc-link-arg=-Wl,--fatal-warnings");
-    println!("cargo:rustc-link-arg=-Wl,--gc-sections");
-    println!("cargo:rustc-link-arg=-Wl,-z,defs");
-
-    // TODO: How to avoid this?
-    if cfg!(target_os = "android") {
-        println!("cargo:rustc-link-lib=static=c++");
-    }
 }
