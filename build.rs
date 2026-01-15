@@ -16,7 +16,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     linker::setup_linker_defaults();
 
-    if cfg!(feature = "cpp") {
+    #[cfg(feature = "cpp")]
+    {
         // TODO: this links all libs in the extern libs folder, which may not be desired if UI is not used
         linker::linker_flags(lib_path.clone());
         build_cpp(include_dir);
@@ -52,6 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[cfg(feature = "cpp")]
 fn build_cpp(include_dir: PathBuf) {
     // only compile in android linux AARCH64
     let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
