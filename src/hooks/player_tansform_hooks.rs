@@ -4,18 +4,18 @@ use bs_cordl::{
 };
 use quest_hook::hook;
 
-use crate::config::CONFIG;
+use crate::{config::CONFIG, hooks::user_info_hooks::LEFT_HANDED};
 
 #[allow(non_snake_case)]
 #[hook("", "PlayerTransforms", "Update")]
 fn PlayerTransforms_Update(this: &mut GlobalNamespace::PlayerTransforms) {
-    let config = CONFIG.lock().unwrap();
-
+    
     // Early return if either hand transform is missing
     if this._leftHandTransform.is_null() || this._rightHandTransform.is_null() {
         return;
     }
-
+    let config = CONFIG.lock().unwrap();
+    
     // OneHandDarthMaul
     if config.darth_maul_one_hand {
         let mut main_saber = this._rightHandTransform;
@@ -115,7 +115,7 @@ fn PlayerTransforms_Update(this: &mut GlobalNamespace::PlayerTransforms) {
     // OneSaber
     if config.one_saber {
         // TODO: Get left handed from game settings
-        let left_handed = false;
+        let left_handed = *LEFT_HANDED.lock().unwrap();
         let swap_controllers = config.swap_controllers;
         let mut left = this._leftHandTransform;
         let mut right = this._rightHandTransform;
