@@ -5,7 +5,7 @@ use bs_cordl::{
 };
 use quest_hook::{hook, libil2cpp::Gc};
 
-use crate::config::CONFIG;
+use crate::{config::CONFIG, hooks::user_info_hooks::CURRENTLY_IN_LEVEL};
 
 #[allow(non_snake_case)]
 #[hook("", "SaberClashEffect", "LateUpdate")]
@@ -13,10 +13,8 @@ use crate::config::CONFIG;
 fn SaberClashEffect_LateUpdate(this: &mut GlobalNamespace::SaberClashEffect) {
     let config = CONFIG.lock().unwrap();
 
-    if config.unicorn_mode {
+    if config.unicorn_mode || config.one_saber {
         //Unicorn
-        return;
-    } else if config.one_saber {
         //OneSaber
         return;
     }
@@ -36,8 +34,7 @@ fn HapticFeedbackController_PlayHapticFeedback(
         return;
     }
 
-    let currently_in_level = false;
-    if !currently_in_level {
+    if !*CURRENTLY_IN_LEVEL.lock().unwrap() {
         HapticFeedbackController_PlayHapticFeedback.original(this, node, hapticPreset);
         return;
     }
