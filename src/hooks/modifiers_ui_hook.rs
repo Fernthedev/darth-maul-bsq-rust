@@ -1,7 +1,8 @@
 use bs_cordl::GlobalNamespace;
 use quest_hook::hook;
+use tracing::info;
 
-use crate::darth_maul_invoke_GameplaySetupViewController_RefreshContent;
+use crate::config::{CONFIG, Config};
 
 #[allow(non_snake_case)]
 #[hook("", "GameplaySetupViewController", "RefreshContent")]
@@ -9,10 +10,15 @@ fn GameplaySetupViewController_RefreshContent(
     this: &mut GlobalNamespace::GameplaySetupViewController,
 ) {
     // Call the original method first
-    unsafe {
-        GameplaySetupViewController_RefreshContent.original(this);
+    GameplaySetupViewController_RefreshContent.original(this);
 
-        darth_maul_invoke_GameplaySetupViewController_RefreshContent(this.into());
+    *CONFIG.lock().unwrap() = Config::read().unwrap();
+
+    info!("Darth maul config: {:#?}", CONFIG.lock().unwrap());
+
+    #[cfg(feature = "ui")]
+    unsafe {
+        crate::darth_maul_invoke_GameplaySetupViewController_RefreshContent(this.into());
     };
 }
 
