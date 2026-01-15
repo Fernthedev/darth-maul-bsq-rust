@@ -9,7 +9,7 @@ codegen-rs
 build_cmake
 extern/
 ndkpath.txt
-
+*.log
 
 compile_commands.json
 compile_commands.events.json
