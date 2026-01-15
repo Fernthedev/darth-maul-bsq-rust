@@ -4,7 +4,7 @@ Darth Maul is a mod that allows you to hold a double blade saber in Beat Saber. 
 
 # Pros (applied in this PoC):
 - Rust!
-- Structured logging
+- Structured logging (with Paper2)
 - Memory safety
 - Concurrently safe
 - Clean error logging on panics 
