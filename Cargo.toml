@@ -7,6 +7,10 @@ rust-version = "1.90"
 [lib]
 crate-type = ["cdylib"]
 
+[features]
+default = []
+ui = []
+
 [profile.release]
 opt-level = 3
 panic = "abort"
@@ -16,7 +20,7 @@ debug = "line-tables-only"
 
 [profile.dev]
 panic = "abort"
-split-debuginfo = "packed"
+# split-debuginfo = "packed"
 
 
 [dependencies]
@@ -32,6 +36,7 @@ bs_cordl = { git = "https://github.com/QuestPackageManager/bs-cordl-rust.git", f
     "UnityEngine+Color",
     "BeatmapObjectSpawnController",
     "NoteData",
+    "SliderData",
     "BeatmapDataItem",
     "PlayerTransforms",
     "SaberClashEffect",
@@ -57,8 +62,3 @@ retour = { git = "https://github.com/workingjubilee/hpmason-retour-rs.git", bran
 cc = "1.2"
 quest_build_helper = { git = "https://github.com/Fernthedev/quest-hook-rs.git", branch = "cordl-fixes", package = "quest_build_helper" }
 
-[workspace]
-
-members = [
-    # "bs_cordl",
-]

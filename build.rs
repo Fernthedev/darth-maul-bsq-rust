@@ -58,12 +58,19 @@ fn build_cpp(include_dir: PathBuf, lib_path: PathBuf) {
 
     linker::linker_flags(lib_path);
 
+    let files = [
+        "cpp/quest_compat.cpp",
+        "cpp/ModifiersUI.cpp",
+        "cpp/EnhancedPlayFlowCoordinator.cpp",
+        "cpp/EnhancedPlaySettingsViewController.cpp",
+    ];
+    for file in &files {
+        println!("cargo:rerun-if-changed={}", file);
+    }
+
     cc::Build::new()
         .cpp(true) // Switch to C++ library compilation.
-        .file("cpp/quest_compat.cpp")
-        .file("cpp/ModifiersUI.cpp")
-        .file("cpp/EnhancedPlayFlowCoordinator.cpp")
-        .file("cpp/EnhancedPlaySettingsViewController.cpp")
+        .files(files)
         // Add quest defaults, defines and includes
         .add_quest_defaults()
         .add_quest_defines()
