@@ -68,9 +68,6 @@ fn NoteBasicCutInfoHelper_GetBasicCutInfo(
     cutDirDeviation: ByRefMut<f32>,
     cutDirAngle: ByRefMut<f32>,
 ) {
-    let mut x = false;
-    let unused_saberTypeOK = ByRefMut::new(&mut x);
-
     NoteBasicCutInfoHelper_GetBasicCutInfo.original(
         noteTransform,
         colorType,
@@ -81,7 +78,7 @@ fn NoteBasicCutInfoHelper_GetBasicCutInfo(
         cutAngleTolerance,
         directionOK,
         speedOK,
-        unused_saberTypeOK,
+        saberTypeOK,
         cutDirDeviation,
         cutDirAngle,
     );
