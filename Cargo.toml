@@ -1,3 +1,5 @@
+cargo-features = ["codegen-backend"]
+
 [package]
 name = "darth_maul_rust"
 version = "0.1.0"
@@ -21,6 +23,7 @@ debug = "line-tables-only"
 
 [profile.dev]
 panic = "abort"
+codegen-backend = "cranelift"
 # split-debuginfo = "packed"
 
 

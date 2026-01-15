@@ -1,0 +1,5 @@
+[build]
+rustflags = ["-Z", "threads=8", "-Clink-arg=-fuse-ld=mold", "-Zthreads=8"]
+
+[unstable]
+codegen-backend = true

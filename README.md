@@ -20,6 +20,11 @@ Darth Maul is a mod that allows you to hold a double blade saber in Beat Saber. 
 This is also using a limited subset of what mods usually do. UI is implemented in C++. This however is a proof of concept to show how Rust mods can work, coexist with the current ecosystem and diversify the scene. Have fun!
 
 
+## Improving compile times
+https://nnethercote.github.io/perf-book/build-configuration.html#cranelift-codegen-back-end
+
+https://nnethercote.github.io/perf-book/build-configuration.html#experimental-parallel-front-end
+
 Port of https://github.com/ModdingPink/QuestDarthMaul in Rust.
 
 Missing:
