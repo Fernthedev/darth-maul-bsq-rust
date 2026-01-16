@@ -8,18 +8,18 @@ use quest_build_helper::{linker, qpm};
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
 
-    let include_dir = manifest_path.join("extern").join("includes");
-    let lib_path = manifest_path.join("extern").join("libs");
-
     // run qpm restore
-    qpm::restore(&manifest_path).expect("Failed to restore dependencies");
+    let qpm_out = qpm::restore(&manifest_path, true).expect("Failed to restore dependencies");
+
+    let include_dir = qpm_out.join("extern").join("includes");
+    let lib_path = qpm_out.join("extern").join("libs");
 
     linker::setup_linker_defaults();
 
     #[cfg(feature = "cpp")]
     {
         // TODO: this links all libs in the extern libs folder, which may not be desired if UI is not used
-        linker::linker_flags(lib_path.clone());
+        linker::linker_flags(&lib_path);
         build_cpp(include_dir);
     }
 
