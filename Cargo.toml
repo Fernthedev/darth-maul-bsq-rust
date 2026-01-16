@@ -36,6 +36,7 @@ codegen-backend = "cranelift"
 paper2_tracing = { git = "https://github.com/Fernthedev/paperlog.git", package = "paper2_tracing", optional = true }
 
 [dependencies]
+scotland2_rs = { git = "https://github.com/QuestPackageManager/scotland2_rs.git" }
 quest_hook = { git = "https://github.com/Fernthedev/quest-hook-rs.git", features = [
     "il2cpp_v31",
 ], branch = "cordl-fixes" }
@@ -70,5 +71,5 @@ retour = { git = "https://github.com/workingjubilee/hpmason-retour-rs.git", bran
 
 
 [build-dependencies]
-cc = { version = "1.2", features = ["parallel"], optional = true}
+cc = { version = "1.2", features = ["parallel"], optional = true }
 quest_build_helper = { git = "https://github.com/Fernthedev/quest-hook-rs.git", branch = "cordl-fixes", package = "quest_build_helper" }

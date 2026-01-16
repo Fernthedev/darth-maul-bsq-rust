@@ -62,7 +62,7 @@ impl Config {
 
         // TODO: Use modloader function to get mod path
         let game_path = "com.beatgames.beatsaber"; // Beatsaber package name
-        let mod_id = MOD_ID.to_string_lossy();
+        let mod_id = MOD_ID;
 
         format!("/sdcard/ModData/{game_path}/Configs/{mod_id}.json").into()
     }

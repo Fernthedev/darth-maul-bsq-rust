@@ -1,7 +1,6 @@
 #![feature(box_patterns, extend_one)]
 
-use std::ffi::{CStr, CString, c_char};
-
+use scotland2_rs::{ModInfo, scotland2_raw::CModInfo};
 use tracing::info;
 
 use crate::config::Config;
@@ -19,25 +18,17 @@ unsafe extern "C" {
     );
 }
 
-pub static MOD_ID: &CStr = c"darth_maul";
-
-#[repr(C)]
-pub struct ModInfo {
-    id: *const c_char,
-    version: *const c_char,
-    version_long: u64,
-}
+pub static MOD_ID: &str = "darth_maul";
 
 #[unsafe(no_mangle)]
-extern "C" fn setup(modinfo: *mut ModInfo) {
-    unsafe {
-        *modinfo = ModInfo {
-            // we have to let the string leak, because the CString is dropped at the end of the function
-            id: MOD_ID.as_ptr(),
-            version: CString::new("1.0.0").unwrap().into_raw(),
-            version_long: 0,
-        }
+extern "C" fn setup(modinfo: &mut CModInfo) {
+    *modinfo = ModInfo {
+        // we have to let the string leak, because the CString is dropped at the end of the function
+        id: MOD_ID.to_string(),
+        version: "1.0.0".to_owned(),
+        version_long: 1,
     }
+    .into();
 
     // setup quest-hook
     // which will setup tracing and panic logging
